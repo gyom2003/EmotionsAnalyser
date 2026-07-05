@@ -1,0 +1,47 @@
+{
+  "info": {
+    "name": "SocialMetrics API",
+    "_postman_id": "b6d9f8b0-0000-4000-8000-000000000000",
+    "description": "Collection d'exemples pour l'API SocialMetrics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Tweet",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Très satisfait du service\",\n  \"positive\": 1,\n  \"negative\": 0\n}"
+        },
+        "url": {"raw": "http://localhost:5000/tweets", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["tweets"]}
+      }
+    },
+    {
+      "name": "List Tweets",
+      "request": {
+        "method": "GET",
+        "url": {"raw": "http://localhost:5000/tweets?limit=50", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["tweets"], "query": [{"key": "limit", "value": "50"}]}
+      }
+    },
+    {
+      "name": "Get Tweet",
+      "request": {
+        "method": "GET",
+        "url": {"raw": "http://localhost:5000/tweets/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["tweets", "1"]}
+      }
+    },
+    {
+      "name": "Analyze",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "[\"J'aime ce produit\", \"C'est nul\"]"},
+        "url": {"raw": "http://localhost:5000/analyze", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["analyze"]}
+      }
+    }
+  ]
+}
