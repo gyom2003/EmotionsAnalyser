@@ -1,12 +1,16 @@
 import os
+from pathlib import Path
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-from model import SentimentModel
-from db import insert_tweet, list_tweets, get_tweet
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parent / ".env")
+
+from model import SentimentModel
+from db import initialize_database, insert_tweet, list_tweets, get_tweet
 
 app = Flask(__name__)
+
+initialize_database()
 
 # Load once at startup — shared across all requests
 _model = SentimentModel()

@@ -16,13 +16,16 @@ cp .env.example .env
 ```
 
 ### 3. Initialise the database
+The application will create the database and seed sample tweets automatically on first launch, so you usually do not need to run the SQL file manually.
+
+If you want to initialise it manually, you can still run:
 ```bash
 mysql -u root -p < setup_db.sql
 ```
 
 ### 4. Run the API
 ```bash
-python app.py
+python start.py
 ```
 
 The server starts on `http://localhost:5000` (override with `PORT` env var).

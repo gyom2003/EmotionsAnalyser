@@ -1,6 +1,25 @@
 import os
+from pathlib import Path
 import mysql.connector
+from dotenv import load_dotenv
 from mysql.connector import Error
+
+load_dotenv(Path(__file__).resolve().parent / ".env")
+
+DEFAULT_SAMPLE_TWEETS = [
+    ("I love this product, it's amazing!", 1, 0),
+    ("Great service, very happy with the results", 1, 0),
+    ("This is the best thing ever, highly recommend", 1, 0),
+    ("Absolutely fantastic experience, will definitely return", 1, 0),
+    ("So happy today, everything is going wonderfully", 1, 0),
+    ("Excellent work, very impressed with the quality", 1, 0),
+    ("This is terrible, worst experience I ever had", 0, 1),
+    ("Very disappointed, complete waste of money and time", 0, 1),
+    ("Awful product, broken on arrival, do not buy", 0, 1),
+    ("Horrible service, never going back to this place", 0, 1),
+    ("The product arrived today in its original packaging", 0, 0),
+    ("Here is my review of the product after testing it", 0, 0),
+]
 
 
 def get_connection():
@@ -11,6 +30,48 @@ def get_connection():
         password=os.environ.get("DB_PASSWORD", ""),
         database=os.environ.get("DB_NAME", "socialmetrics"),
     )
+
+
+def get_admin_connection():
+    return mysql.connector.connect(
+        host=os.environ.get("DB_HOST", "localhost"),
+        port=int(os.environ.get("DB_PORT", 3306)),
+        user=os.environ.get("DB_USER", "root"),
+        password=os.environ.get("DB_PASSWORD", ""),
+        autocommit=True,
+    )
+
+
+def initialize_database() -> None:
+    """Create the database and seed sample tweets if the table is empty."""
+    db_name = os.environ.get("DB_NAME", "socialmetrics")
+    conn = get_admin_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            f"CREATE DATABASE IF NOT EXISTS `{db_name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+        )
+        cursor.execute(f"USE `{db_name}`")
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS tweets (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                text TEXT NOT NULL,
+                positive TINYINT(1) NOT NULL DEFAULT 0,
+                negative TINYINT(1) NOT NULL DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        )
+        cursor.execute("SELECT COUNT(*) FROM tweets")
+        if cursor.fetchone()[0] == 0:
+            cursor.executemany(
+                "INSERT INTO tweets (text, positive, negative) VALUES (%s, %s, %s)",
+                DEFAULT_SAMPLE_TWEETS,
+            )
+            conn.commit()
+    finally:
+        conn.close()
 
 
 def fetch_training_data() -> tuple[list[str], list[int], list[int]]:

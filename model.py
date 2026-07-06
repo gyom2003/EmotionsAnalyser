@@ -66,11 +66,25 @@ class SentimentModel:
 
     def __init__(self):
         if os.path.exists(MODEL_PATH):
-            self._load()
-        else:
-            self._train(_SEED_POSITIVE + _SEED_NEGATIVE + _SEED_NEUTRAL,
-                        [1] * len(_SEED_POSITIVE) + [0] * len(_SEED_NEGATIVE) + [0] * len(_SEED_NEUTRAL),
-                        [0] * len(_SEED_POSITIVE) + [1] * len(_SEED_NEGATIVE) + [0] * len(_SEED_NEUTRAL))
+            try:
+                self._load()
+                return
+            except Exception:
+                pass
+
+        try:
+            from db import fetch_training_data
+
+            texts, positive_labels, negative_labels = fetch_training_data()
+            if len(texts) >= 8:
+                self._train(texts, positive_labels, negative_labels)
+                return
+        except Exception:
+            pass
+
+        self._train(_SEED_POSITIVE + _SEED_NEGATIVE + _SEED_NEUTRAL,
+                    [1] * len(_SEED_POSITIVE) + [0] * len(_SEED_NEGATIVE) + [0] * len(_SEED_NEUTRAL),
+                    [0] * len(_SEED_POSITIVE) + [1] * len(_SEED_NEGATIVE) + [0] * len(_SEED_NEUTRAL))
 
     # ------------------------------------------------------------------
     # Public API

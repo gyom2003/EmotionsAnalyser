@@ -21,13 +21,25 @@ cp .env.example .env
 
 ## Initialiser la base de données MySQL
 
-Exécuter :
+Au premier lancement, l’application crée automatiquement la base `socialmetrics`, la table `tweets` et insère des tweets d’exemple si la table est vide.
+
+Si vous voulez l’initialiser manuellement, exécutez :
 
 ```bash
 mysql -u root -p < setup_db.sql
 ```
 
 Cela crée la base `socialmetrics` et la table `tweets` (colonnes `id`, `text`, `positive`, `negative`, `created_at`).
+
+## Lancer l’API
+
+Depuis la racine du projet, exécutez :
+
+```bash
+python start.py
+```
+
+L’API sera disponible sur http://localhost:5000.
 
 ## Endpoints
 
