@@ -27,6 +27,16 @@ python app.py
 
 The server starts on `http://localhost:5000` (override with `PORT` env var).
 
+### 5. (Optional) Generate the evaluation report
+```bash
+pip install -r evaluation_report/requirements-report.txt
+python evaluation_report/evaluate.py
+```
+
+Everything is already set up — this regenerates `evaluation_report/evaluation_report.pdf`
+(confusion matrices, precision/recall/F1, bias analysis) from the current `tweets` data.
+See [`evaluation_report/README.md`](evaluation_report/README.md) for details.
+
 ---
 
 ## API Reference
@@ -102,11 +112,15 @@ Requires at least **20** labelled samples.
 ## Project structure
 
 ```
-├── app.py          # Flask API
-├── model.py        # TF-IDF + LogisticRegression model
-├── db.py           # MySQL connection & queries
-├── retrain.py      # Retraining script
-├── setup_db.sql    # DB initialisation + seed data
+├── app.py                    # Flask API
+├── model.py                  # TF-IDF + LogisticRegression model
+├── db.py                     # MySQL connection & queries
+├── retrain.py                # Retraining script
+├── setup_db.sql              # DB initialisation + seed data
+├── evaluation_report/        # Evaluation report (confusion matrices, precision/recall/F1, bias analysis)
+│   ├── evaluate.py
+│   ├── evaluation_report.pdf
+│   └── requirements-report.txt
 ├── requirements.txt
 └── .env.example
 ```
